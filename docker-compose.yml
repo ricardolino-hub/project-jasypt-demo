@@ -1,0 +1,22 @@
+services:
+  dbDemo:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: jasypt_db
+      POSTGRES_PASSWORD: 123456-db
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # THE KEY: Unlocks both secrets (Dockerfile and Compose)
+      - JASYPT_ENCRYPTOR_PASSWORD=master-key-123
+      # Secret A:
+      - SPRING_DATASOURCE_PASSWORD=ENC(ASZA4S1JpjjjulXrEZZT/jSdkckGxniGNtHXtGWQw7x67CIi553yhWyqxSZLGgzL)
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbDemo:5432/jasypt_db
+      - SPRING_DATASOURCE_USERNAME=postgres	  
+    depends_on:
+      - dbDemo
